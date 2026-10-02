@@ -102,3 +102,9 @@ Bug fixes
 
 ## Update 10: map photo preview
 - MapView.tsx + index.css: hovering a map dot (laptop) shows a small card with the photo, top finding and risk score; clicking still opens the full card. On phones, tapping opens the full card as before.
+
+## Update 11: new tagline and Learn page
+- New tagline everywhere: "Healthy streams, healthy communities." with the line "AI explains what it sees. You make the call." on the home page
+- New Learn page (/learn): 8 plain-language guides (murky water, algae, trash, sewage, stagnant water and mosquitoes, pH, foam and oil, One Health), each with why it matters for people, animals and nature, how to spot it, what you can do, and how StreamLens checks it
+- "What is this?" links on finding cards, "What is One Health?" on the risk card, and "Learn more" chips under "Why this score", all jumping to the right guide
+- Navigation: Learn added to the sidebar and the phone tab bar (Methodology is linked from the Learn page on phones)

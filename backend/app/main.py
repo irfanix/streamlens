@@ -16,7 +16,7 @@ from .routers import assessments, media, stats
 app = FastAPI(
     title="StreamLens API",
     version="1.0.0",
-    description="AI that explains. Humans who decide.",
+    description="Healthy streams, healthy communities. Explainable AI with human review.",
 )
 
 app.add_middleware(

@@ -1,6 +1,9 @@
 import { ConfidenceDial } from "./ConfidenceDial";
 import type { Finding } from "../lib/types";
 import { clsx } from "clsx";
+import { Link } from "react-router-dom";
+import { HelpCircle } from "lucide-react";
+import { TOPIC_FOR } from "../lib/learn";
 
 export function FindingCard({
   finding,
@@ -29,6 +32,15 @@ export function FindingCard({
               {finding.why_animal && <li><span className="text-text-muted">Animal:</span> {finding.why_animal}</li>}
               {finding.why_ecosystem && <li><span className="text-text-muted">Ecosystem:</span> {finding.why_ecosystem}</li>}
             </ul>
+          )}
+          {TOPIC_FOR[finding.label] && (
+            <Link
+              to={`/learn#${TOPIC_FOR[finding.label]}`}
+              className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-primary underline underline-offset-2"
+            >
+              <HelpCircle size={14} aria-hidden /> What is this?
+              <span className="sr-only"> Learn about {finding.display_label}</span>
+            </Link>
           )}
         </div>
       </div>

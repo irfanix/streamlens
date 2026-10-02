@@ -16,7 +16,7 @@ export function TopBar({ onInfo, onDemoInfo }: { onInfo: () => void; onDemoInfo:
         <FlaskConical className="text-primary" aria-hidden />
         <span className="font-heading">StreamLens</span>
       </div>
-      <div className="hidden md:block text-sm text-text-muted">AI that explains. Humans who decide.</div>
+      <div className="hidden md:block text-sm text-text-muted">Healthy streams, healthy communities.</div>
       <div className="flex items-center gap-2">
         {demo && (
           <button

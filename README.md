@@ -11,7 +11,9 @@ license: mit
 
 # StreamLens
 
-**AI that explains. Humans who decide.**
+**Healthy streams, healthy communities.**
+
+AI explains what it sees. You make the call.
 
 StreamLens helps citizen scientists assess urban freshwater streams. A citizen uploads a stream photo and a few field measurements. The AI flags visible stressors, explains why with heatmaps and plain language, and the citizen confirms or corrects the result. Every assessment produces a transparent One Health Risk Index for human, animal and ecosystem health.
 

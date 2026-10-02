@@ -11,6 +11,7 @@ import Results from "./pages/Results";
 import MapPage from "./pages/MapPage";
 import Review from "./pages/Review";
 import Methodology from "./pages/Methodology";
+import Learn from "./pages/Learn";
 
 export default function App() {
   const [infoOpen, setInfoOpen] = useState(false);
@@ -29,6 +30,7 @@ export default function App() {
             <Route path="/map" element={<MapPage />} />
             <Route path="/review" element={<Review />} />
             <Route path="/methodology" element={<Methodology />} />
+            <Route path="/learn" element={<Learn />} />
           </Routes>
         </main>
       </div>

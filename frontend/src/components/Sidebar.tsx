@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { Map, ClipboardList, FlaskConical, BookOpen, Camera, Home, ChevronsLeft } from "lucide-react";
+import { Map, ClipboardList, FlaskConical, BookOpen, Camera, Home, ChevronsLeft, GraduationCap } from "lucide-react";
 import { useState } from "react";
 import { clsx } from "clsx";
 
@@ -8,8 +8,12 @@ const items = [
   { to: "/assess", label: "Assess", short: "Assess", icon: Camera },
   { to: "/map", label: "Map", short: "Map", icon: Map },
   { to: "/review", label: "Review queue", short: "Review", icon: ClipboardList },
+  { to: "/learn", label: "Learn", short: "Learn", icon: GraduationCap },
   { to: "/methodology", label: "Methodology", short: "Method", icon: BookOpen }
 ];
+
+// Phones have room for five tabs; Methodology is linked from the Learn page instead.
+const mobileItems = items.filter((i) => i.to !== "/methodology");
 
 export function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
@@ -60,7 +64,7 @@ export function Sidebar() {
 export function MobileTabs() {
   return (
     <nav className="md:hidden fixed bottom-0 left-0 right-0 z-30 bg-white border-t border-line shadow-[0_-1px_3px_rgba(15,23,42,0.06)] flex justify-around pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))]" aria-label="Primary">
-      {items.map(({ to, label, short, icon: Icon }) => (
+      {mobileItems.map(({ to, label, short, icon: Icon }) => (
         <NavLink
           key={to}
           to={to}

@@ -9,6 +9,7 @@ import { FindingCard } from "../components/FindingCard";
 import { ReviewPanel } from "../components/ReviewPanel";
 import { RiskGauge } from "../components/RiskGauge";
 import { RiskBadge } from "../components/RiskBadge";
+import { TOPIC_FOR } from "../lib/learn";
 import { NumberCounter } from "../components/NumberCounter";
 import { getAssessment } from "../lib/api";
 import type { AssessmentResult } from "../lib/types";
@@ -218,7 +219,12 @@ export default function Results() {
         <section className="lg:col-span-2 space-y-4 stagger">
           <div id="risk" className="scroll-mt-20">
             <GlassCard>
-              <h2 className="font-heading text-lg">One Health Risk</h2>
+              <div className="flex items-center justify-between gap-2">
+                <h2 className="font-heading text-lg">One Health Risk</h2>
+                <Link to="/learn#one-health" className="text-sm font-medium text-primary underline underline-offset-2">
+                  What is One Health?
+                </Link>
+              </div>
               <div className="mt-2"><RiskGauge value={a.risk.total} level={a.risk.level} label="Overall" /></div>
               <div className="grid grid-cols-3 gap-2 mt-4 text-center">
                 <div>
@@ -266,6 +272,14 @@ export default function Results() {
                       ))}
                     </BarChart>
                   </ResponsiveContainer>
+                </div>
+                <div className="mt-3 flex flex-wrap items-center gap-2 text-sm">
+                  <span className="text-text-muted">Learn more:</span>
+                  {[...new Set(contributions.map((c) => TOPIC_FOR[c.key]).filter(Boolean))].map((id) => (
+                    <Link key={id} to={`/learn#${id}`} className="chip hover:border-primary">
+                      {id === "turbidity" ? "Murky water" : id === "foam-oil" ? "Foam and oil" : id === "ph" ? "pH" : id[0].toUpperCase() + id.slice(1)}
+                    </Link>
+                  ))}
                 </div>
                 <ul className="sr-only">
                   {contributions.map((c) => (

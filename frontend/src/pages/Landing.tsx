@@ -36,8 +36,9 @@ export default function Landing() {
           StreamLens
         </motion.h1>
         <p className="mt-3 text-xl md:text-2xl text-primary font-medium">
-          AI that explains. Humans who decide.
+          Healthy streams, healthy communities.
         </p>
+        <p className="mt-2 font-medium text-text">AI explains what it sees. You make the call.</p>
         <p className="mt-4 max-w-2xl text-text-muted">
           Supporting urban freshwater assessment for One Health. Snap a stream, get an
           explainable first look, confirm or correct it, and help communities see what
@@ -131,7 +132,10 @@ export default function Landing() {
       </section>
 
       <section>
-        <h2 className="font-heading text-2xl mb-4">One Health</h2>
+        <div className="flex flex-wrap items-end justify-between gap-2 mb-4">
+          <h2 className="font-heading text-2xl">One Health</h2>
+          <Link to="/learn" className="text-sm font-medium text-primary underline underline-offset-2">Learn about stream health</Link>
+        </div>
         <div className="grid md:grid-cols-3 gap-4 stagger">
           {[
             { title: "Human", icon: User, text: "Exposure, recreation, drinking water, vector-borne risk." },
