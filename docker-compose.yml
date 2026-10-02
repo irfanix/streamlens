@@ -1,0 +1,9 @@
+services:
+  streamlens:
+    build: .
+    ports:
+      - "7860:7860"
+    environment:
+      - STREAMLENS_DEMO_MODE=1
+    volumes:
+      - ./backend/data:/app/backend/data

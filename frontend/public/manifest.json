@@ -1,0 +1,21 @@
+{
+  "name": "StreamLens",
+  "short_name": "StreamLens",
+  "description": "Citizen stream assessment with explainable AI and human review.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#F8FAFC",
+  "theme_color": "#0F766E",
+  "categories": ["education", "health", "utilities"],
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Assess a stream", "url": "/assess", "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Map", "url": "/map", "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }] }
+  ]
+}

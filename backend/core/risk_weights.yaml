@@ -1,0 +1,23 @@
+# Domain weights for the One Health Risk Index.
+weights:
+  stagnation:   { human: 0.15, animal: 0.30, ecosystem: 0.10 }
+  algae:        { human: 0.20, animal: 0.25, ecosystem: 0.20 }
+  debris:       { human: 0.25, animal: 0.30, ecosystem: 0.30 }
+  sewage:       { human: 0.30, animal: 0.10, ecosystem: 0.15 }
+  turbidity:    { human: 0.10, animal: 0.05, ecosystem: 0.15 }
+  ph_deviation: { human: 0.05, animal: 0.05, ecosystem: 0.15 }
+  warm_water:   { human: 0.05, animal: 0.10, ecosystem: 0.05 }
+  oil:          { human: 0.05, animal: 0.05, ecosystem: 0.05 }
+
+interaction:
+  vector_risk_multiplier: 0.15     # stagnant x warm water (mosquito breeding)
+  pollution_risk_multiplier: 0.15  # debris x turbidity (sewage often travels with trash)
+
+exposure:
+  homes_or_playground_multiplier: 1.2
+  farm_animals_multiplier: 1.2
+
+domain_weights:
+  human: 0.4
+  animal: 0.3
+  ecosystem: 0.3
