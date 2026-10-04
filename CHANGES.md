@@ -112,3 +112,7 @@ Bug fixes
 ## Update 12: sample presets and Save as PDF
 - Assess: three sample buttons (Polluted river, Clean stream, Algae stream) that load a matching demo photo with its field measurements, plus "Or try a random sample"
 - Results: "Save as PDF" button creates a clean one-page A4 report (score, Human/Animal/Ecosystem, photo and heatmap, findings, why this score, field observations, data quality checks, limitations). Works on laptops and phones through the browser's print/save menu
+
+## Update 13: trash rule tuned on real photos
+- core/demo_mode.py: trash now also needs mixed colours in a small area (litter is many colours; ripples, sky and sparkles are one colour). Tested on the 12 demo photos: clean water, muddy water and algae photos no longer show false trash; both trash photos still do
+- Assess presets pick the best-matching photo (Clean stream picks the cleanest clear_ photo)

@@ -86,11 +86,14 @@ export default function Assess() {
   /** Picks the best demo photo for a preset: by its file-name type first, then by what the AI found. */
   function pickPreset(all: AssessmentResult[], preset: Preset): AssessmentResult | undefined {
     const byRiskDesc = [...all].sort((x, y) => y.risk.total - x.risk.total);
+    const byRiskAsc = [...byRiskDesc].reverse();
     if (preset === "polluted")
-      return all.find((s) => kindOf(s) === "trash") ?? byRiskDesc.find((s) => has(s, "trash", "polluted_debris")) ?? byRiskDesc[0];
+      return byRiskDesc.find((s) => kindOf(s) === "trash" && has(s, "trash")) ??
+        byRiskDesc.find((s) => has(s, "trash", "polluted_debris")) ?? byRiskDesc[0];
     if (preset === "clean")
-      return all.find((s) => kindOf(s) === "clear") ?? [...byRiskDesc].reverse()[0];
-    return all.find((s) => kindOf(s) === "algae") ?? byRiskDesc.find((s) => has(s, "algae_mat", "algal_bloom"));
+      return byRiskAsc.find((s) => kindOf(s) === "clear") ?? byRiskAsc[0];
+    return byRiskDesc.find((s) => kindOf(s) === "algae" && has(s, "algae_mat", "algal_bloom")) ??
+      byRiskDesc.find((s) => has(s, "algae_mat", "algal_bloom"));
   }
 
   async function useSample(s: AssessmentResult, name: string) {

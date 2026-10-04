@@ -30,7 +30,7 @@ def test_floating_objects_are_trash():
     arr = _noisy((110, 105, 80), seed=1)
     rng = np.random.default_rng(3)
     colors = [(240, 240, 235), (220, 40, 40), (40, 90, 220), (250, 200, 30)]
-    for i in range(60):
+    for i in range(150):  # a dense pile of litter
         x, y = int(rng.integers(0, 600)), int(rng.integers(0, 440))
         cv2.rectangle(arr, (x, y), (x + int(rng.integers(8, 30)), y + int(rng.integers(6, 20))), colors[i % 4], -1)
     assert "trash" in _labels(arr)

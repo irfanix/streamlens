@@ -17,19 +17,30 @@ def _rng_for(img_bytes: bytes) -> np.random.Generator:
     return np.random.default_rng(seed)
 
 
-def _trash_mask(rgb: np.ndarray, hue: np.ndarray, sat: np.ndarray, val: np.ndarray) -> np.ndarray:
-    """Floating trash: many small, sharp-edged objects that are white/grey or brightly coloured.
+def _local_sd(ch: np.ndarray, k: int) -> np.ndarray:
+    mu = cv2.blur(ch, (k, k))
+    return np.sqrt(np.maximum(cv2.blur(ch * ch, (k, k)) - mu * mu, 0))
 
-    Water itself is smooth (few edges), so we keep only plastic-like colours in busy, edge-rich areas.
+
+def _trash_mask(rgb: np.ndarray, hue: np.ndarray, sat: np.ndarray, val: np.ndarray) -> np.ndarray:
+    """Floating trash: busy patches of many small objects in mixed colours.
+
+    Water, sky, ripples and sparkles are busy in brightness but stay one colour; a pile of
+    litter mixes white, blue, red and grey in a small area. So we require sharp edges, strong
+    brightness variation AND colour variation in the neighbourhood, on plastic-like pixels.
     """
     gray = cv2.cvtColor(rgb, cv2.COLOR_RGB2GRAY)
     h, w = gray.shape
     edges = cv2.Canny(gray, 60, 160).astype(np.float32) / 255.0
-    k = max(9, min(w, h) // 30)
-    density = cv2.blur(edges, (k, k))
+    density = cv2.blur(edges, (max(9, min(w, h) // 30),) * 2)
+    lab = cv2.cvtColor(cv2.GaussianBlur(rgb, (3, 3), 0), cv2.COLOR_RGB2LAB).astype(np.float32)
+    k = max(7, min(w, h) // 40)
+    colour_mix = np.hypot(_local_sd(lab[..., 1], k), _local_sd(lab[..., 2], k))
+    brightness_mix = _local_sd(lab[..., 0], k)
     bright_plastic = (val > 0.70) & (sat < 0.25)
     vivid_not_green = (sat > 0.45) & (val > 0.35) & ~((hue > 0.17) & (hue < 0.45))
-    mask = ((density > 0.06) & (bright_plastic | vivid_not_green)).astype(np.uint8)
+    mask = (density > 0.06) & (colour_mix > 9) & (brightness_mix > 28) & (bright_plastic | vivid_not_green)
+    mask = cv2.morphologyEx(mask.astype(np.uint8), cv2.MORPH_OPEN, np.ones((3, 3), np.uint8))
     return cv2.morphologyEx(mask, cv2.MORPH_CLOSE, np.ones((5, 5), np.uint8))
 
 
@@ -140,7 +151,7 @@ def analyze(img: Image.Image, img_bytes: bytes) -> dict[str, Any]:
                 "confidence": float(min(0.9, 0.4 + ratios["oil"] * 3.0)),
                 "box": box,
             })
-    if ratios["trash"] > 0.008:
+    if ratios["trash"] > 0.015:
         # Trash is many small pieces: group nearby pieces into clusters before drawing boxes.
         clusters = cv2.dilate(masks["trash"], np.ones((15, 15), np.uint8))
         trash_boxes = _boxes_from_mask(clusters, min_area_ratio=0.004)[:3]
@@ -150,7 +161,7 @@ def analyze(img: Image.Image, img_bytes: bytes) -> dict[str, Any]:
         for box in trash_boxes:
             detections.append({
                 "label": "trash",
-                "confidence": float(min(0.9, 0.45 + ratios["trash"] * 2.5)),
+                "confidence": float(min(0.9, 0.55 + ratios["trash"] * 10.0)),
                 "box": box,
             })
 
