@@ -108,3 +108,7 @@ Bug fixes
 - New Learn page (/learn): 8 plain-language guides (murky water, algae, trash, sewage, stagnant water and mosquitoes, pH, foam and oil, One Health), each with why it matters for people, animals and nature, how to spot it, what you can do, and how StreamLens checks it
 - "What is this?" links on finding cards, "What is One Health?" on the risk card, and "Learn more" chips under "Why this score", all jumping to the right guide
 - Navigation: Learn added to the sidebar and the phone tab bar (Methodology is linked from the Learn page on phones)
+
+## Update 12: sample presets and Save as PDF
+- Assess: three sample buttons (Polluted river, Clean stream, Algae stream) that load a matching demo photo with its field measurements, plus "Or try a random sample"
+- Results: "Save as PDF" button creates a clean one-page A4 report (score, Human/Animal/Ecosystem, photo and heatmap, findings, why this score, field observations, data quality checks, limitations). Works on laptops and phones through the browser's print/save menu

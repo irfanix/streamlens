@@ -194,3 +194,39 @@ h1, h2, h3, h4 { font-family: Inter, system-ui, sans-serif; font-weight: 600; le
   white-space: normal;
 }
 .leaflet-tooltip.photo-tip::before { border-top-color: #FFFFFF; }
+
+/* ---------- Printable report ("Save as PDF") ---------- */
+.print-report { display: none; }
+
+@media print {
+  @page { size: A4; margin: 12mm; }
+  html, body { background: #FFFFFF !important; height: auto; }
+  #root { display: none !important; }
+  .print-report {
+    display: block;
+    color: #0F172A;
+    font: 11pt/1.45 Inter, system-ui, sans-serif;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .pr-head { display: flex; justify-content: space-between; gap: 12px; border-bottom: 2px solid #0F766E; padding-bottom: 8px; }
+  .pr-brand { font-size: 20pt; font-weight: 700; color: #0F766E; }
+  .pr-title { font-size: 14pt; font-weight: 600; }
+  .pr-right { text-align: right; }
+  .pr-muted { color: #475569; font-size: 9.5pt; }
+  .pr-risk { display: flex; align-items: center; gap: 16px; margin: 12px 0; padding: 10px 14px; border: 1px solid #E2E8F0; border-radius: 10px; }
+  .pr-score { font: 700 32pt/1 "JetBrains Mono", monospace; }
+  .pr-score span { font-size: 12pt; color: #64748B; }
+  .pr-level { font-weight: 700; font-size: 13pt; }
+  .pr-images { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .pr-images figure { margin: 0; }
+  .pr-images img { width: 100%; height: 62mm; object-fit: cover; border-radius: 8px; border: 1px solid #E2E8F0; }
+  .pr-images figcaption { font-size: 9pt; color: #475569; margin-top: 2px; }
+  .pr-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 8px; }
+  .pr-cols h2 { font-size: 11.5pt; font-weight: 700; margin: 10px 0 4px; color: #0F766E; }
+  .pr-cols ul { margin: 0; padding-left: 16px; }
+  .pr-cols table { width: 100%; border-collapse: collapse; }
+  .pr-cols td { padding: 3px 0; border-bottom: 1px solid #F1F5F9; }
+  .pr-cols td:first-child { color: #475569; width: 45%; }
+  .pr-foot { margin-top: 14px; padding-top: 8px; border-top: 1px solid #E2E8F0; font-size: 8.5pt; color: #64748B; }
+}

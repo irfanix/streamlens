@@ -2,7 +2,8 @@ import { useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
-import { AlertTriangle, ArrowDown, Check, ChevronDown, Eye, EyeOff, Share2 } from "lucide-react";
+import { AlertTriangle, ArrowDown, Check, ChevronDown, Eye, EyeOff, FileDown, Share2 } from "lucide-react";
+import { PrintReport } from "../components/PrintReport";
 import { GlassCard } from "../components/GlassCard";
 import { CompareSlider } from "../components/CompareSlider";
 import { FindingCard } from "../components/FindingCard";
@@ -104,10 +105,15 @@ export default function Results() {
             {copied ? <Check size={16} aria-hidden /> : <Share2 size={16} aria-hidden />}
             {copied ? "Link copied" : "Share"}
           </button>
+          <button type="button" className="btn-secondary" onClick={() => window.print()}>
+            <FileDown size={16} aria-hidden /> Save as PDF
+          </button>
           <Link className="btn-secondary" to="/map">View on map</Link>
           <a className="btn-secondary" href={`/api/export/${a.id}`} target="_blank" rel="noreferrer">Export JSON</a>
         </div>
       </div>
+
+      <PrintReport a={a} />
 
       {/* Summary first, so the result is clear without scrolling. */}
       <GlassCard>

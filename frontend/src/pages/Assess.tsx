@@ -1,11 +1,18 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Camera, ImagePlus } from "lucide-react";
 import { GlassCard } from "../components/GlassCard";
 import { StepWizard } from "../components/StepWizard";
 import { AnalysisSkeleton } from "../components/Skeleton";
 import { createAssessment, getAssessment, getAssessments } from "../lib/api";
-import type { AssessmentInput, ValidationIssue } from "../lib/types";
+import type { AssessmentInput, AssessmentResult, ValidationIssue } from "../lib/types";
+
+type Preset = "polluted" | "clean" | "algae";
+const PRESETS: { id: Preset; label: string; emoji: string }[] = [
+  { id: "polluted", label: "Polluted river", emoji: "🧴" },
+  { id: "clean", label: "Clean stream", emoji: "💧" },
+  { id: "algae", label: "Algae stream", emoji: "🟢" }
+];
 
 const initial: AssessmentInput = {
   ph: null, clarity_cm: null, clarity_label: null,
@@ -61,18 +68,62 @@ export default function Assess() {
   }
 
   // Loads one of the demo photos (and its field measurements) so anyone can try the app.
+  // Demo samples, loaded once. Each has the photo plus the field measurements saved with it.
+  const samplesRef = useRef<AssessmentResult[] | null>(null);
+  const [busyPreset, setBusyPreset] = useState<string | null>(null);
+
+  async function getSamples(): Promise<AssessmentResult[]> {
+    if (samplesRef.current) return samplesRef.current;
+    const list = (await getAssessments({ limit: "50" })).filter((x) => x.is_demo && x.image_url);
+    const full = await Promise.all(list.map((x) => getAssessment(x.id)));
+    samplesRef.current = full;
+    return full;
+  }
+
+  const has = (s: AssessmentResult, ...labels: string[]) => s.findings.some((f) => labels.includes(f.label));
+  const kindOf = (s: AssessmentResult) => /\((\w+)\)/.exec(s.inputs.notes ?? "")?.[1] ?? "";
+
+  /** Picks the best demo photo for a preset: by its file-name type first, then by what the AI found. */
+  function pickPreset(all: AssessmentResult[], preset: Preset): AssessmentResult | undefined {
+    const byRiskDesc = [...all].sort((x, y) => y.risk.total - x.risk.total);
+    if (preset === "polluted")
+      return all.find((s) => kindOf(s) === "trash") ?? byRiskDesc.find((s) => has(s, "trash", "polluted_debris")) ?? byRiskDesc[0];
+    if (preset === "clean")
+      return all.find((s) => kindOf(s) === "clear") ?? [...byRiskDesc].reverse()[0];
+    return all.find((s) => kindOf(s) === "algae") ?? byRiskDesc.find((s) => has(s, "algae_mat", "algal_bloom"));
+  }
+
+  async function useSample(s: AssessmentResult, name: string) {
+    const blob = await (await fetch(s.image_url)).blob();
+    onFile(new File([blob], `sample-${name}-${s.id}.jpg`, { type: blob.type || "image/jpeg" }));
+    setInp({ ...initial, ...s.inputs, notes: "Sample photo" });
+  }
+
+  async function loadPreset(preset: Preset) {
+    setBusyPreset(preset);
+    setError(null);
+    try {
+      const all = await getSamples();
+      if (all.length === 0) throw new Error("No sample photos are available yet.");
+      const pick = pickPreset(all, preset);
+      if (!pick) throw new Error("No sample of this kind is available. Try another one.");
+      await useSample(pick, preset);
+    } catch (e) {
+      setError((e as Error).message || "Could not load a sample photo.");
+    } finally {
+      setBusyPreset(null);
+    }
+  }
+
   async function loadSample() {
     setSampleBusy(true);
     setError(null);
     try {
-      const list = (await getAssessments({ limit: "50" })).filter((x) => x.is_demo && x.image_url);
-      if (list.length === 0) throw new Error("No sample photos are available yet.");
-      const pick = list[sampleIdx % list.length];
+      const all = await getSamples();
+      if (all.length === 0) throw new Error("No sample photos are available yet.");
+      const pick = all[sampleIdx % all.length];
       setSampleIdx((i) => i + 1);
-      const full = await getAssessment(pick.id);
-      const blob = await (await fetch(full.image_url)).blob();
-      onFile(new File([blob], `sample-stream-${pick.id}.jpg`, { type: blob.type || "image/jpeg" }));
-      setInp({ ...initial, ...full.inputs, notes: "Sample photo" });
+      await useSample(pick, "random");
     } catch (e) {
       setError((e as Error).message || "Could not load a sample photo.");
     } finally {
@@ -166,12 +217,31 @@ export default function Assess() {
                 </label>
                 <div className="flex items-center gap-3 text-sm">
                   <span className="h-px flex-1 bg-line" aria-hidden />
-                  <span className="text-text-muted">No photo with you?</span>
+                  <span className="text-text-muted">No photo with you? Try a sample</span>
                   <span className="h-px flex-1 bg-line" aria-hidden />
                 </div>
-                <button type="button" className="btn-secondary w-full" onClick={loadSample} disabled={sampleBusy}>
-                  <ImagePlus size={18} aria-hidden />
-                  {sampleBusy ? "Loading sample..." : file?.name.startsWith("sample-") ? "Try another sample photo" : "Try a sample photo"}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2" role="group" aria-label="Sample photos">
+                  {PRESETS.map((p) => (
+                    <button
+                      key={p.id}
+                      type="button"
+                      className="btn-secondary justify-start sm:justify-center"
+                      onClick={() => loadPreset(p.id)}
+                      disabled={busyPreset !== null || sampleBusy}
+                    >
+                      <span aria-hidden className="text-lg">{p.emoji}</span>
+                      {busyPreset === p.id ? "Loading..." : p.label}
+                    </button>
+                  ))}
+                </div>
+                <button
+                  type="button"
+                  className="self-center text-sm font-medium text-primary underline underline-offset-2 inline-flex items-center gap-1"
+                  onClick={loadSample}
+                  disabled={sampleBusy || busyPreset !== null}
+                >
+                  <ImagePlus size={15} aria-hidden />
+                  {sampleBusy ? "Loading sample..." : "Or try a random sample"}
                 </button>
                 {preview && (
                   <img src={preview} alt="Preview" className="rounded-2xl border border-line max-h-72 object-contain" />
