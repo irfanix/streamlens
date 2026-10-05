@@ -1,6 +1,5 @@
 ---
 title: StreamLens
-emoji: 🌊
 colorFrom: green
 colorTo: blue
 sdk: docker
